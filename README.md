@@ -1,177 +1,69 @@
-# Headless WordPress + React + Tailwind CSS Project
+# React + TypeScript + Vite
 
-A modern, SEO-optimized, and accessible website built with WordPress as a headless CMS, React with TypeScript, and Tailwind CSS 4.1.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Features
+Currently, two official plugins are available:
 
-- **Headless WordPress CMS**: WordPress backend with REST API
-- **React + TypeScript**: Modern frontend with type safety
-- **Tailwind CSS 4.1**: Utility-first CSS framework
-- **SEO Optimized**: Yoast SEO integration with meta tags
-- **Accessible**: WCAG 2.2 compliant with screen reader support
-- **Responsive Design**: Mobile-first approach
-- **Performance**: Optimized loading and caching
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Project Structure
+## Expanding the ESLint configuration
 
-```
-├── frontend/                 # React application
-│   ├── src/
-│   │   ├── components/       # React components
-│   │   │   └── SEOHead.tsx   # SEO metadata component
-│   │   ├── hooks/            # Custom React hooks
-│   │   │   └── useWordPress.ts
-│   │   ├── services/         # API services
-│   │   │   └── wordpress.ts
-│   │   ├── types/            # TypeScript types
-│   │   │   └── wordpress.ts
-│   │   └── utils/            # Utility functions
-│   │       └── accessibility.ts
-│   ├── .env.example          # Environment variables template
-│   └── package.json
-├── WORDPRESS_SETUP.md        # WordPress installation guide
-└── README.md                 # This file
-```
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-## Quick Start
+```js
+export default tseslint.config([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
 
-### 1. Frontend Setup
+      // Remove tseslint.configs.recommended and replace with this
+      ...tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      ...tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      ...tseslint.configs.stylisticTypeChecked,
 
-```bash
-cd frontend
-npm install
-cp .env.example .env
-npm run dev
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
 
-### 2. WordPress Setup
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-Follow the detailed guide in `WORDPRESS_SETUP.md` to set up WordPress with:
-- MariaDB database
-- Yoast SEO plugin
-- CORS configuration
-- REST API endpoints
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
 
-### 3. Environment Configuration
-
-Update `frontend/.env` with your WordPress API URL:
-
-```env
-VITE_WORDPRESS_API_URL=http://localhost:8080/wp-json/wp/v2
+export default tseslint.config([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
-
-## Development
-
-### Available Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run lint` - Run ESLint
-- `npm run preview` - Preview production build
-
-### API Integration
-
-The project includes pre-built services for WordPress REST API:
-
-- `WordPressService.getPosts()` - Fetch blog posts
-- `WordPressService.getPages()` - Fetch pages
-- `WordPressService.getMedia()` - Fetch media files
-
-### SEO Features
-
-- Yoast SEO metadata integration
-- Open Graph tags
-- Twitter Card support
-- JSON-LD structured data
-- Canonical URLs
-
-### Accessibility Features
-
-- WCAG 2.2 compliant
-- Screen reader support
-- Keyboard navigation
-- Focus management
-- Skip links
-- Semantic HTML
-
-## Tailwind Plus Integration
-
-Once your project is set up, follow these steps to install a Tailwind Plus template:
-
-1. **Access Tailwind Plus**
-   - Visit https://tailwindui.com/
-   - Log in with your Tailwind Plus account
-
-2. **Choose a Template**
-   - Browse application templates
-   - Select a template that fits your needs
-   - Download the template files
-
-3. **Install Template**
-   - Extract template files to `frontend/src/components/`
-   - Install any additional dependencies
-   - Update routing and API integration
-
-4. **Customize**
-   - Replace placeholder content with WordPress data
-   - Update colors and branding
-   - Add your specific functionality
-
-## Deployment
-
-### WordPress (Backend)
-
-1. Deploy to hosting provider (WP Engine, Kinsta, etc.)
-2. Configure SSL certificates
-3. Install and configure plugins
-4. Set up database
-
-### React App (Frontend)
-
-1. Update API URL in environment variables
-2. Build production bundle: `npm run build`
-3. Deploy to hosting service:
-   - Vercel: `npx vercel`
-   - Netlify: `npm run build && netlify deploy`
-   - GitHub Pages: Configure build workflow
-
-## Performance Optimization
-
-### WordPress
-- Use caching plugins (WP Rocket, W3 Total Cache)
-- Optimize images (WebP format)
-- CDN for media files
-- Database optimization
-
-### React App
-- Code splitting with React.lazy()
-- Image optimization
-- Bundle analysis
-- React Query for API caching
-
-## Security
-
-- HTTPS in production
-- WordPress security plugins
-- CORS configuration
-- Input validation
-- Regular updates
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
-
-## License
-
-This project is licensed under the MIT License.
-
-## Support
-
-For issues and questions:
-1. Check the WordPress setup guide
-2. Review the troubleshooting section
-3. Open an issue on GitHub
